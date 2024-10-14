@@ -88,7 +88,7 @@ ryu-manager digital_twin_ryu_parallel.py
 Then om the third CLI start a mininet network with a remote controller. For example:
 
 ```
-sudo mn --topo star,4 --mac --switch ovsk --controller remote 
+sudo mn --topo single,4 --mac --switch ovsk --controller remote 
 ```
 
 You can now start recording messages and compute the topology by sending a non-flooding message inside the network, for example a ping. I suggest to send a single simple message since this operation will not start the twin automatically, but will generate the twin code that we can start inside the container. The simplest way to do so is to send a single ping from h1 to h2 in the mininet CLI (third CLI):
