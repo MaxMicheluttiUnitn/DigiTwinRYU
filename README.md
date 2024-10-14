@@ -125,10 +125,10 @@ It is possible to draw graphs that show the amount of traffic in bits sent over 
 
 The traffic of the original network can be observed by typing (after the controller has been stopped):
 ```
-python3 msg_count.txt
+python3 diagram_generator.py msg_count.txt
 ```
 
 The traffic of the digital twin network can be observed by typing (after the controller has been stopped):
 ```
-python3 msg_count_twin.txt
+python3 diagram_generator.py msg_count_twin.txt
 ```
