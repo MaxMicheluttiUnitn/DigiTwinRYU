@@ -4,6 +4,7 @@ USER root
 WORKDIR /root
 
 COPY traffic_sim.py /root/
+COPY digital_twin_server.py /root/
 COPY ENTRYPOINT.sh /
 
 RUN apt-get update

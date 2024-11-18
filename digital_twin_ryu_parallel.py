@@ -7,6 +7,7 @@ from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
 import time
+import ipaddress
 import os
 
 # from ryu.lib.packet import udp
@@ -73,6 +74,11 @@ class DigitalTwin(app_manager.RyuApp):
         super(DigitalTwin, self).__init__(*args, **kwargs)
         # outport = self.slice_ports[dpid][slicenumber]
         self.mac_to_port = {}
+        try:
+            self.container_ip = ipaddress.ip_address(input("Please enter the container IP: "))
+        except:
+            print("Invalid IP address")
+            exit(1)
         self.has_topology = False
         self.current_frame = 0
         self.creation_time = time.time()
@@ -224,8 +230,15 @@ class DigitalTwin(app_manager.RyuApp):
             out.write(links_code)
             out.write(DIGITAL_TWIN_MAIN)
         
+        # SEND CODE TO CONTAINER
         # docker cp digital_twin_network.py mikimax:root/network.py
-        os.system("docker cp digital_twin_network.py mikimax:root/network.py")
+        # os.system("docker cp digital_twin_network.py mikimax:root/network.py")
+        with open("digital_twin_network.py", "r", encoding='utf8') as f:
+            code = f.read()
+            code = code.replace("\"", "\\\"")
+            code = code.replace("\n", "\\n")
+            code = code.replace("\t", "\\t")
+            os.system(f"curl -X POST -H 'Content-Type: application/json' -d '{{\"kind\":\"source_code\",\"code\":\"{code}\"}}' http://localhost:2233")
 
         # optional (is it doable?): run the network in the container
         print("Twin Network Ready")
@@ -245,7 +258,11 @@ class DigitalTwin(app_manager.RyuApp):
         if elapsed > FRAME_LENGTH_SECONDS:
             # SEND FRAME TO CONTAINER
             # docker cp traffic/1.txt mikimax:root/traffic/1.txt
-            os.system(f"docker cp traffic/{self.current_frame}.txt mikimax:root/traffic/{self.current_frame}.txt")
+            #os.system(f"docker cp traffic/{self.current_frame}.txt mikimax:root/traffic/{self.current_frame}.txt")
+            with open(f"traffic/{self.current_frame}.txt", "r", encoding='utf8') as t_data:
+                traffic_data = t_data.read()
+                traffic_data.replace("\"", "\\\"")
+                os.system(f"curl -X POST -H 'Content-Type: application/json' -d '{{\"kind\":\"traffic_data\",\"traffic\":\"{traffic_data}\",\"serial_number\":{self.current_frame}}}' http://localhost:2233")
             # UPDATE TO NEXT FRAME
             self.frame_start = now
             self.current_frame += 1
