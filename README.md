@@ -79,34 +79,32 @@ On the first CLI start the container as follows:
 docker run -it --rm --name mikimax --privileged -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /lib/modules:/lib/modules maxmiki/my_mn
 ```
 
+Once the container is started, you can start the routine that will wait for the necessary data to build the network:
+
+```
+python3 start_routine.py
+```
+
 On the second CLI start the parallel controller:
 
 ```
 ryu-manager digital_twin_ryu_parallel.py
 ```
 
-Then om the third CLI start a mininet network with a remote controller. For example:
+Then on the third CLI start a mininet network with a remote controller. For example:
 
 ```
 sudo mn --topo single,4 --mac --switch ovsk --controller remote 
 ```
 
-You can now start recording messages and compute the topology by sending a non-flooding message inside the network, for example a ping. I suggest to send a single simple message since this operation will not start the twin automatically, but will generate the twin code that we can start inside the container. The simplest way to do so is to send a single ping from h1 to h2 in the mininet CLI (third CLI):
+You can now start recording messages and compute the topology by sending a non-flooding message inside the network, for example a ping. The simplest way to do so is to send a single ping from h1 to h2 in the mininet CLI (third CLI), but you can also send more complex networking commands such as iperf:
 ```
 h1 ping -c 1 h2
 ```
-This is not necessary and all traffic sent before the start of the twin will be eventually simulated on the twin, however starting the twin as soon as possible will decrease drastically the delay between the original and simulated messages.<br>
-
-Now you can start the parallel twin network. In the first CLI where the container runs type the following command:
-```
-python3 network.py
-```
-You do not need to use sudo since all commands that run in docker containers are run as super-user by default.<br>
 
 Now you can send messgaes in the original network and those messages will be automatically simulated on the twin. 
-The delay between the original and simulated message should be around 10 seconds, if the digital twin is not busy simulating old messages. <br>
-When the original network is inactive, nothing will be simulated and as soon as the original network gets active again, the twin resumes simulating messages. This allows the twin to catch up to the original network if it is inactive for some time.<br>
-You can simulate messages on the original network by typing commands in the mininet CLI such as:
+The delay between the original and simulated message should be around 10 seconds. <br>
+You can simulate more messages on the original network by typing commands in the mininet CLI such as, for example:
 
 ```
 iperf h1 h2
@@ -117,7 +115,7 @@ h2 ping h1
 
 Once you are satisfied with the simulation, you can stop the original network by typing "exit" in the mininet CLI.
 Both the digital twin and the controller need to be stopped with a kill signal (Ctrl + C) and they will both exit gracefully.<br>
-You can stop the docker container by typing the "exit" command. Nothing inside the container will be saved. However, you can find the code of the digital twin in the "network.py" file since the parallel controller will also save it on the original machine. This is the exact same code that is run in the container during parallel execution and can be re-run outside the container with a proper controller in the same way as the asynchronous replay works to collect data about the traffic that is replicated, with the only difference in execution being that long inactive phases will be skipped.
+You can stop the docker container by typing the "exit" command. remember that nothing inside the container will be saved when it is stopped! However, you can find the code of the digital twin in the "digital_twin_network_parallel.py" file since the parallel controller will also save it on the original machine. This is the exact same code that is run inside the container during parallel execution and can be re-run outside the container with a proper controller in the same way as the asynchronous replay works in order to collect data about the traffic that is replicated, with the only difference in execution being that long inactive phases will be skipped.
 
 ## Drawing traffic graphs
 
@@ -132,3 +130,8 @@ The traffic of the digital twin network can be observed by typing (after the con
 ```
 python3 diagram_generator.py msg_count_twin.txt
 ```
+
+## Issues
+
+The issue regarding the traffic data recording not working when simulating parallel execution depends on a compatibility issue between python 10 and the ryu-manager. If someone was able to successfully install the ryu-manager correctly inside the container (by changing the Dockerfile), it would be possible to record traffic data by running the simple_logging_controller with ryu inside the container.<br>
+Another approach that would make running the parallele version and recording traffic viable would be to run the simple_logging_controller outside the machine and communicate with the mininet network running inside the machine. However I was unable to accomplish that due to issues when sending packages to and from the machine since I was unable to successfully map ports with the -p option.

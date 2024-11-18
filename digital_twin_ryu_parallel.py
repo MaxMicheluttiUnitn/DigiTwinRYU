@@ -217,7 +217,7 @@ class DigitalTwin(app_manager.RyuApp):
                 right_name = f"h{right_index+1}"
             links_code += f"        self.addLink(\"{left_name}\", \"{right_name}\", **host_link_config)\n"
 
-        with open("digital_twin_network.py","w",encoding='utf8') as out:
+        with open("digital_twin_network_parallel.py","w",encoding='utf8') as out:
             out.write(INCLUDES)
             out.write(DIGITAL_TWIN_CLASS_DEFINITION)
             out.write(switch_loop)
@@ -227,8 +227,8 @@ class DigitalTwin(app_manager.RyuApp):
             out.write(links_code)
             out.write(DIGITAL_TWIN_MAIN)
         
-        # docker cp digital_twin_network.py mikimax:root/network.py
-        os.system("docker cp digital_twin_network.py mikimax:root/network.py")
+        # docker cp digital_twin_network_parallel.py mikimax:root/network.py
+        os.system("docker cp digital_twin_network_parallel.py mikimax:root/network.py")
 
         # optional (is it doable?): run the network in the container
         print("Twin Network Ready")
