@@ -45,7 +45,7 @@ HOST_CREATION_BLOCK = """
 DIGITAL_TWIN_MAIN = """
 topos = {"digitaltwintopo": (lambda: DigitalTwinTopo())}
 
-if __name__ == "__main__":
+def main():
     topo = DigitalTwinTopo()
     net = Mininet(
         topo=topo,
@@ -61,6 +61,9 @@ if __name__ == "__main__":
     net.start()
     simulate_traffic(net, True)
     net.stop()
+
+if __name__ == "__main__":
+    main()
 """
 
 

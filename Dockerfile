@@ -4,6 +4,7 @@ USER root
 WORKDIR /root
 
 COPY traffic_sim.py /root/
+COPY start_routine.py /root/
 COPY ENTRYPOINT.sh /
 
 RUN apt-get update

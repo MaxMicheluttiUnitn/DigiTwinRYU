@@ -18,14 +18,14 @@ class DigitalTwinTopo(Topo):
             self.addHost("h%d" % (i + 1), **host_config)
 
         self.addLink("s1", "s2", **host_link_config)
-        self.addLink("s2", "s3", **host_link_config)
         self.addLink("s3", "h3", **host_link_config)
-        self.addLink("s1", "h1", **host_link_config)
-        self.addLink("s2", "h2", **host_link_config)
+        self.addLink("s2", "h1", **host_link_config)
+        self.addLink("s1", "h2", **host_link_config)
+        self.addLink("s2", "s3", **host_link_config)
 
 topos = {"digitaltwintopo": (lambda: DigitalTwinTopo())}
 
-if __name__ == "__main__":
+def main():
     topo = DigitalTwinTopo()
     net = Mininet(
         topo=topo,
@@ -41,3 +41,6 @@ if __name__ == "__main__":
     net.start()
     simulate_traffic(net, True)
     net.stop()
+
+if __name__ == "__main__":
+    main()

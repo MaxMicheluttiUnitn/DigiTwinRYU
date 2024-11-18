@@ -42,7 +42,7 @@ class DigitalTwinTopo(Topo):
 
 topos = {"digitaltwintopo": (lambda: DigitalTwinTopo())}
 
-if __name__ == "__main__":
+def main():
     topo = DigitalTwinTopo()
     net = Mininet(
         topo=topo,
@@ -58,3 +58,6 @@ if __name__ == "__main__":
     net.start()
     CLI(net)
     net.stop()
+
+if __name__ == "__main__":
+    main()
