@@ -251,14 +251,14 @@ class DigitalTwin(app_manager.RyuApp):
             with open(f"traffic/{self.current_frame}.txt", "a", encoding='utf8') as out:
                 out.write(f"{elapsed} {src} {dst} {size}\n")
 
-    def _count_msg(self, size):
+    def _count_msg(self, from_node,to_node,size):
         if not self.created_log_file:
             self.created_log_file = True
             with open("msg_count_async.txt", "w") as out:
                 out.write("")
         elapsed = time.time() - self.creation_time
         with open("msg_count_async.txt", "a") as out:
-            out.write(f"{elapsed} {size}\n")
+            out.write(f"{elapsed} {from_node} {to_node} {size}\n")
 
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
@@ -277,14 +277,17 @@ class DigitalTwin(app_manager.RyuApp):
         #     ip6 = pkt.get_protocol(ipv6.ipv6)
         #     print(ip6)
 
-        if eth.ethertype == ether_types.ETH_TYPE_LLDP:
-            # ignore lldp packet
-            return
         dst = eth.dst
         src = eth.src
         size = msg.msg_len
+        self._count_msg(src,dst,size)
+
+        if eth.ethertype == ether_types.ETH_TYPE_LLDP:
+            # ignore lldp packet
+            return
+        
         dpid = datapath.id
-        self._count_msg(size)
+        
         self.mac_to_port.setdefault(dpid, {})
 
         # print("packet in ", dpid, src, dst, in_port, eth.ethertype)

@@ -73,7 +73,7 @@ class DigitalTwin(app_manager.RyuApp):
         with open("logs.txt", "a",encoding='utf8') as file:
             file.write(f"Packet: {src} -> {dst} at {time_of_event}\n")
 
-    def _count_msg(self, size):
+    def _count_msg(self, from_node, to_node, size):
         if not self.created_log_file:
             self.created_log_file = True
             with open("msg_count_twin.txt", "w") as out:
@@ -84,7 +84,7 @@ class DigitalTwin(app_manager.RyuApp):
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
         msg = ev.msg
-        self._count_msg(msg.msg_len)
+        
         datapath = msg.datapath
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
@@ -92,12 +92,14 @@ class DigitalTwin(app_manager.RyuApp):
 
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocol(ethernet.ethernet)
+        dst = eth.dst
+        src = eth.src
+
+        self._count_msg(src,dst,msg.msg_len)
 
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             # ignore lldp packet
             return
-        dst = eth.dst
-        src = eth.src
         dpid = datapath.id
         # print(datapath.__dir__())
         self.mac_to_port.setdefault(dpid, {})

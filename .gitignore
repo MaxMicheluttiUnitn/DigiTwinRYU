@@ -7,5 +7,6 @@ logs.txt
 msg_count.txt
 msg_count_twin.txt
 msg_count_parallel.txt
+msg_count_async.txt
 
 traffic
