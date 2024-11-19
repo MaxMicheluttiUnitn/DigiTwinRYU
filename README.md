@@ -121,15 +121,12 @@ You can stop the docker container by typing the "exit" command. remember that no
 
 It is possible to draw graphs that show the amount of traffic in bits sent over the network during time.<br>
 
-The traffic of the original network can be observed by typing (after the controller has been stopped):
+The traffic of the network can be generated as follows:
 ```
-python3 diagram_generator.py msg_count.txt
+python3 diagram_generator.py <logging_file> <output_folder>
 ```
-
-The traffic of the digital twin network can be observed by typing (after the controller has been stopped):
-```
-python3 diagram_generator.py msg_count_twin.txt
-```
+The "logging_file" is the file where traffic has been logged by the corresponfing controller.<br>
+The "ouput_folder" is a folder where the graphs showing traffic across links will be saved.
 
 ## Issues
 
