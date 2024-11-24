@@ -9,6 +9,8 @@ msg_count_twin.txt
 msg_count_parallel.txt
 msg_count_async.txt
 
+digital_twin_network_parallel.py
+
 traffic
 traffic_2
 traffic_3
