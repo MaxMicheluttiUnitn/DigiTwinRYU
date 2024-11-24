@@ -93,7 +93,7 @@ def main():
         plt.title(f'Traffic diagram {link}')
         
         plt.savefig(f"{output_folder}/{link}.png")
-        plt.show()
+        #plt.show()
 
 if __name__ == '__main__':
     main()
