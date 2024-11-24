@@ -77,7 +77,7 @@ def main():
             line_data = line.split(" ")
             messages.append(TrafficData(float(line_data[0]), str(line_data[1]), str(line_data[2]),int(line_data[3])))
     links,data = sort_messages(messages)
-    print(data)
+    #print(data)
     if not os.path.isdir(output_folder):
         os.mkdir(output_folder)
     for link in links:
