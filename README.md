@@ -130,7 +130,12 @@ The "ouput_folder" is a folder where the graphs showing traffic across links wil
 
 ## Requirements
 
-This project requires python 3.10+ to run.
+This project requires python 3.10+ to run.<br>
+In order to run the diagram generator module you need matplotlib, to install type:
+
+```
+pip install -r requirements.txt
+```
 
 ## Issues
 
