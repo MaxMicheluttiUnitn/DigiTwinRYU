@@ -128,6 +128,10 @@ python3 diagram_generator.py <logging_file> <output_folder>
 The "logging_file" is the file where traffic has been logged by the corresponfing controller.<br>
 The "ouput_folder" is a folder where the graphs showing traffic across links will be saved.
 
+## Requirements
+
+This project requires python 3.10+ to run.
+
 ## Issues
 
 The issue regarding the traffic data recording not working when simulating parallel execution depends on a compatibility issue between python 10 and the ryu-manager. If someone was able to successfully install the ryu-manager correctly inside the container (by changing the Dockerfile), it would be possible to record traffic data by running the simple_logging_controller with ryu inside the container.<br>
