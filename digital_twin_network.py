@@ -11,19 +11,17 @@ class DigitalTwinTopo(Topo):
 
         host_config = dict(inNamespace=True)
         host_link_config = dict()
-        for i in range(4):
+        for i in range(3):
             sconfig = {"dpid": "%016x" % (i+1)}
             self.addSwitch(f"s{i+1}", **sconfig)
-        for i in range(4):
+        for i in range(3):
             self.addHost("h%d" % (i + 1), **host_config)
 
-        self.addLink("s1", "s3", **host_link_config)
-        self.addLink("s3", "h3", **host_link_config)
-        self.addLink("s4", "h4", **host_link_config)
-        self.addLink("s2", "h2", **host_link_config)
+        self.addLink("s1", "h2", **host_link_config)
+        self.addLink("s1", "s2", **host_link_config)
         self.addLink("s2", "s3", **host_link_config)
-        self.addLink("s1", "h1", **host_link_config)
-        self.addLink("s2", "s4", **host_link_config)
+        self.addLink("s2", "h1", **host_link_config)
+        self.addLink("s3", "h3", **host_link_config)
 
 topos = {"digitaltwintopo": (lambda: DigitalTwinTopo())}
 

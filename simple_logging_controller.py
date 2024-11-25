@@ -79,7 +79,7 @@ class DigitalTwin(app_manager.RyuApp):
             with open("msg_count_twin.txt", "w") as out:
                 out.write("")
         with open("msg_count_twin.txt", "a",encoding='utf8') as file:
-            file.write(f"{time.time() - self.creation_time} {size}\n")
+            file.write(f"{time.time() - self.creation_time} {from_node} {to_node} {size}\n")
 
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
